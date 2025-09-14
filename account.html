@@ -86,6 +86,31 @@
     showConfirm.addEventListener("change", function() {
       confirmPassword.type = this.checked ? "text" : "password";
     });
+       const form = document.getElementById("account-form");
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzF-OHhBq260AabRkLJ5xONiktstkuVpiDjwqpc3rxPPXEgcGDFA14HWljULSOACVXwyQ/exec';
+
+        form.addEventListener('submit', e => {
+            e.preventDefault(); // Prevent page reload
+
+            fetch(scriptURL, {
+                method: 'POST',
+                body: new FormData(form)
+            })
+            .then(response => response.json()) // Expect JSON from the script
+            .then(res => {
+                if(res.result === "success") {
+                    window.location.href = "websitetype.html"; // Redirect on success
+                } else {
+                    alert("Something went wrong. Try again.");
+                    console.error(res.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error!', error.message);
+                alert("Error connecting to Google Sheets.");
+            });
+        });
   </script>
 </body>
 </html>
+
