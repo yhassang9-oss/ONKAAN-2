@@ -1,0 +1,411 @@
+/* =============================
+   RESET + BASE
+============================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  background: #f8fafc;
+  color: #1a1a1a;
+  line-height: 1.7;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+}
+
+h1, h2, h3 {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 32px;
+  background: linear-gradient(135deg, #3b82f6, #1e3a8a);
+  color: #fff;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 1rem;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: rgba(255, 255, 255, 0.2);
+  transition: left 0.4s ease;
+}
+
+.btn:hover::before {
+  left: 0;
+}
+
+.btn:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 10px 24px rgba(59, 130, 246, 0.4);
+}
+
+/* =============================
+   HEADER
+============================= */
+header {
+  width: 100%;
+  padding: 24px 80px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  animation: slideIn 0.5s ease forwards;
+}
+
+.logo {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #3b82f6;
+  letter-spacing: -0.03em;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.05);
+}
+
+nav {
+  display: flex;
+  gap: 30px;
+}
+
+nav a {
+  font-weight: 500;
+  color: #2d3748;
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+nav a::after {
+  content: '';
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background: #3b82f6;
+  transition: width 0.3s ease;
+}
+
+nav a:hover::after {
+  width: 100%;
+}
+
+nav a:hover {
+  color: #3b82f6;
+}
+
+/* =============================
+   HERO SECTION
+============================= */
+#hero {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+#hero::before {
+  content: '';
+  position: absolute;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(255,255,255,0.2) 0%, transparent 70%);
+  animation: pulse 10s infinite ease-in-out;
+}
+
+#hero h1 {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  animation: zoomIn 1s ease forwards;
+}
+
+#hero p {
+  font-size: 1.4rem;
+  max-width: 600px;
+  margin-bottom: 30px;
+  animation: fadeUp 1.2s ease forwards 0.2s;
+  opacity: 0;
+}
+
+#hero .btn {
+  font-size: 1.2rem;
+  animation: fadeIn 1.5s ease forwards 0.4s;
+  opacity: 0;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from { transform: translateY(-100%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.8); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from { transform: translateY(40px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+/* =============================
+   FEATURES
+============================= */
+#features {
+  padding: 100px 80px;
+  background: #fff;
+  text-align: center;
+}
+
+#features h2 {
+  font-size: 2.5rem;
+  margin-bottom: 50px;
+  animation: fadeIn 1s ease forwards;
+}
+
+.feature-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+}
+
+.feature-card {
+  background: #f0f4ff;
+  padding: 30px;
+  border-radius: 16px;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  clip-path: polygon(0 0, 100% 0, 100% 85%, 85% 100%, 0 100%);
+}
+
+.feature-card:hover {
+  transform: translateY(-8px) scale(1.03);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+}
+
+/* =============================
+   HOW IT WORKS
+============================= */
+#howitworks {
+  padding: 100px 80px;
+  background: #f8fafc;
+  text-align: center;
+}
+
+#howitworks h2 {
+  font-size: 2.5rem;
+  margin-bottom: 50px;
+  animation: fadeIn 1s ease forwards;
+}
+
+.steps {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+}
+
+.step {
+  background: #fff;
+  padding: 25px;
+  border-radius: 12px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(20px);
+  opacity: 0;
+}
+
+.step.visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.step:hover {
+  transform: scale(1.03);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* =============================
+   TEMPLATES
+============================= */
+#templates {
+  padding: 100px 80px;
+  background: #fff;
+  text-align: center;
+}
+
+#templates h2 {
+  font-size: 2.5rem;
+  margin-bottom: 50px;
+  animation: fadeIn 1s ease forwards;
+}
+
+.templates-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 30px;
+}
+
+.template-card {
+  background: #e9f3ff;
+  padding: 35px;
+  border-radius: 16px;
+  font-weight: 500;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.template-card::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, transparent 70%);
+  transition: transform 0.5s ease;
+}
+
+.template-card:hover::before {
+  transform: rotate(45deg);
+}
+
+.template-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+/* =============================
+   FOOTER
+============================= */
+footer {
+  background: #0f172a;
+  color: #d1d5db;
+  text-align: center;
+  padding: 30px;
+  font-size: 1rem;
+  position: relative;
+}
+
+footer p {
+  margin: 8px 0;
+  animation: fadeIn 1s ease forwards;
+}
+
+/* =============================
+   SCROLL-TRIGGERED ANIMATIONS
+============================= */
+[data-animate] {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-animate].visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* =============================
+   RESPONSIVE (Mobile & Tablet)
+============================= */
+@media (max-width: 1200px) {
+  header {
+    padding: 20px 40px;
+  }
+  #hero h1 {
+    font-size: 3rem;
+  }
+  #features, #howitworks, #templates {
+    padding: 80px 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  #hero h1 {
+    font-size: 2.5rem;
+  }
+  #hero p {
+    font-size: 1.2rem;
+  }
+  .feature-list, .templates-grid {
+    grid-template-columns: 1fr;
+  }
+  #features, #howitworks, #templates {
+    padding: 60px 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+    padding: 15px 20px;
+  }
+  nav {
+    flex-wrap: wrap;
+    gap: 15px;
+  }
+  nav a {
+    margin: 5px 15px 0 0;
+  }
+  #hero {
+    min-height: 80vh;
+    padding: 80px 20px;
+  }
+  #hero h1 {
+    font-size: 2rem;
+  }
+  #hero p {
+    font-size: 1rem;
+  }
+}

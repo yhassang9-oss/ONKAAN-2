@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Join ONKAAN</title>
+  <link rel="stylesheet" href="account.css">
+</head>
+<body>
+  <div class="account-container">
+    <img src="images/ONKAANLOGO.png" alt="ONKAAN Logo" class="logo">
+
+    <form id="account-form">
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" placeholder="Enter your full name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="age">Age</label>
+        <input type="number" id="age" name="age" placeholder="Enter your age" required>
+      </div>
+
+      <div class="form-group">
+        <label for="gender">Gender</label>
+        <select id="gender" name="gender" required>
+          <option value="">Select Gender</option>
+          <option value="male">Male</option>
+          <option value="female">Female</option>
+          <option value="other">Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+      </div>
+
+      <div class="form-group">
+        <label for="gmail">Gmail</label>
+        <input type="email" id="gmail" name="gmail" placeholder="Enter your Gmail address" required>
+      </div>
+
+      <div class="form-group">
+        <label for="upi">UPI ID</label>
+        <input type="text" id="upi" name="upi" placeholder="Enter your UPI ID" required>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter password" required>
+        <label class="checkbox-inline">
+          <input type="checkbox" id="show-password"> Show Password
+        </label>
+      </div>
+
+      <div class="form-group">
+        <label for="confirm-password">Confirm Password</label>
+        <input type="password" id="confirm-password" name="confirm-password" placeholder="Re-enter password" required>
+        <label class="checkbox-inline">
+          <input type="checkbox" id="show-confirm-password"> Show Password
+        </label>
+      </div>
+
+      <button type="submit">Create Account</button>
+      <p class="error-msg" id="error-msg" style="display:none;"></p>
+    </form>
+  </div>
+
+  <script>
+    const form = document.getElementById("account-form");
+    form.addEventListener("submit", function(e) {
+      e.preventDefault(); // prevents page reload
+      // Add your validation or redirection here
+      alert("Form submitted!"); 
+    });
+
+    const password = document.getElementById("password");
+    const showPassword = document.getElementById("show-password");
+    showPassword.addEventListener("change", function() {
+      password.type = this.checked ? "text" : "password";
+    });
+
+    const confirmPassword = document.getElementById("confirm-password");
+    const showConfirm = document.getElementById("show-confirm-password");
+    showConfirm.addEventListener("change", function() {
+      confirmPassword.type = this.checked ? "text" : "password";
+    });
+  </script>
+</body>
+</html>

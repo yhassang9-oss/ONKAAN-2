@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Template Your Information</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="Information">
+        <div id="parcelForm" style="width: 400px; padding: 20px; border: 1px solid #ccc; border-radius: 8px; background: #f9f9f9;">
+            <h3>Parcel Information</h3>
+            
+            <label for="fullName">Full Name:</label><br>
+            <input type="text" id="fullName" placeholder="Enter full name" style="width: 100%; padding: 8px; margin-bottom: 10px;"><br>
+            
+            <label for="address">Address:</label><br>
+            <textarea id="address" placeholder="Enter address" style="width: 100%; padding: 8px; margin-bottom: 10px;"></textarea><br>
+            
+            <label for="phone">Phone Number:</label><br>
+            <input type="tel" id="phone" placeholder="Enter phone number" style="width: 100%; padding: 8px; margin-bottom: 10px;"><br>
+            
+            <label for="email">Gmail:</label><br>
+            <input type="email" id="email" placeholder="Enter Gmail" style="width: 100%; padding: 8px; margin-bottom: 15px;"><br>
+            
+            <button id="submitParcel" style="padding: 10px 20px; background: #232f3e; color: white; border: none; border-radius: 4px; cursor: pointer;">Submit</button>
+        </div>
+    </div>
+
+    <script>
+        // Unique key for this form page
+        const formStorageKey = "buynow-form-data";
+
+        // Get form elements
+        const fullName = document.getElementById("fullName");
+        const address = document.getElementById("address");
+        const phone = document.getElementById("phone");
+        const email = document.getElementById("email");
+        const submitBtn = document.getElementById("submitParcel");
+
+        // Restore saved data if exists
+        window.addEventListener("DOMContentLoaded", () => {
+            const savedData = JSON.parse(localStorage.getItem(formStorageKey) || "{}");
+            if (savedData.fullName) fullName.value = savedData.fullName;
+            if (savedData.address) address.value = savedData.address;
+            if (savedData.phone) phone.value = savedData.phone;
+            if (savedData.email) email.value = savedData.email;
+        });
+
+        // Save form data on input change
+        [fullName, address, phone, email].forEach(input => {
+            input.addEventListener("input", () => {
+                const data = {
+                    fullName: fullName.value,
+                    address: address.value,
+                    phone: phone.value,
+                    email: email.value
+                };
+                localStorage.setItem(formStorageKey, JSON.stringify(data));
+            });
+        });
+
+        // Optional: handle submit
+        submitBtn.addEventListener("click", () => {
+            alert("Form submitted!");
+            localStorage.removeItem(formStorageKey); // Clear saved data if needed
+            // You can add further submission logic here
+        });
+    </script>
+</body>
+</html>

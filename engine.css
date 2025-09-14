@@ -1,0 +1,197 @@
+/* =============================
+   RESET + BASE
+============================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* =============================
+   BODY LAYOUT
+============================= */
+body {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  overflow: hidden;
+  color: #1A1A1A;
+}
+
+/* =============================
+   TOPBAR
+============================= */
+.topbar {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(14px);
+  padding: 16px 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  border-radius: 16px;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  position: fixed;
+  top: 20px;
+  left: 280px; /* adjusted for sidebar width */
+  width: calc(100% - 300px);
+  z-index: 1000;
+}
+
+/* =============================
+   SIDEBAR
+============================= */
+.sidebar {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(14px);
+  width: 260px;
+  padding: 25px;
+  border-radius: 20px;
+  border: 1px solid transparent;
+  background-clip: padding-box;
+  height: calc(100vh - 40px);
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  overflow-y: auto;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+  z-index: 900;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background-color: rgba(59, 130, 246, 0.5);
+  border-radius: 4px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+/* =============================
+   BUTTONS
+============================= */
+.save-btn,
+.tool-btn,
+.buy1, .buy2, .buy3, .buy4, .buy5,
+.cart1, .cart2, .cart3, .cart4, .cart5 {
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+.save-btn:hover,
+.tool-btn:hover,
+.buy1:hover, .buy2:hover, .buy3:hover, .buy4:hover, .buy5:hover,
+.cart1:hover, .cart2:hover, .cart3:hover, .cart4:hover, .cart5:hover {
+  transform: translateY(-4px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+}
+
+.save-btn {
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  color: #FFFFFF;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.tool-btn {
+  display: block;
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 12px;
+  border: none;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  color: #FFFFFF;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.tool-btn.active-tool {
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.5);
+}
+
+/* BUY & CART BUTTONS */
+.buy1, .buy2, .buy3, .buy4, .buy5,
+.cart1, .cart2, .cart3, .cart4, .cart5 {
+  background: linear-gradient(135deg, #3b82f6, #06b6d4);
+  color: #FFFFFF;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+/* Hover effect for buttons */
+.buy1:hover, .buy2:hover, .buy3:hover, .buy4:hover, .buy5:hover,
+.cart1:hover, .cart2:hover, .cart3:hover, .cart4:hover, .cart5:hover {
+  transform: scale(1.05);
+  box-shadow: 0 6px 16px rgba(59,130,246,0.4);
+}
+
+/* =============================
+   PREVIEW AREA (UNCHANGED)
+============================= */
+.preview-area {
+  margin-left: 300px;
+  margin-top: 100px;
+  height: calc(100vh - 50px);
+  width: calc(100vw - 200px);
+  overflow: auto;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+.preview-wrapper {
+  transform: scale(0.6);
+  transform-origin: top left;
+  width: 1600px;
+  height: auto;
+}
+
+.preview-wrapper iframe {
+  width: 1600px;
+  height: 3000px;
+  border: none;
+}
+
+/* =============================
+   RESPONSIVE
+============================= */
+@media (max-width: 1024px) {
+  .topbar { left: 20px; width: calc(100% - 40px); }
+  .sidebar { width: 100%; height: auto; position: static; border-radius: 16px 16px 0 0; margin: 20px 0; }
+  .preview-area { margin-left: 20px; margin-top: 20px; width: calc(100% - 40px); height: calc(100vh - 200px); }
+}
+
+@media (max-width: 768px) {
+  .topbar { padding: 12px 20px; }
+  .sidebar { padding: 20px; }
+  .save-btn, .tool-btn, .buy1, .buy2, .buy3, .buy4, .buy5,
+  .cart1, .cart2, .cart3, .cart4, .cart5 { font-size: 0.9rem; padding: 10px 16px; }
+}
+
+@media (max-width: 480px) {
+  body { padding: 10px; }
+  .topbar { padding: 10px 15px; border-radius: 12px; top: 10px; }
+  .sidebar { margin: 10px; padding: 15px; }
+  .preview-area { margin-left: 10px; width: calc(100% - 20px); height: calc(100vh - 150px); }
+  .save-btn, .tool-btn, .buy1, .buy2, .buy3, .buy4, .buy5,
+  .cart1, .cart2, .cart3, .cart4, .cart5 { font-size: 0.85rem; padding: 8px 14px; }
+}

@@ -1,0 +1,205 @@
+#logo1{
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+    box-shadow: 0 0 15px grey ;
+}
+#landingdiv1{
+    text-align: center;
+    background-color: rgb(225, 223, 223);
+
+}
+body{
+    background-color: rgb(225, 223, 223);
+}
+
+#buildsellgrow{
+    font-size: 4em;
+    font-family: poppins, sans-serif;
+}
+#get-started{
+    background-color: white;
+    font-size: 2.4em;
+    font-family: poppins, sans-serif;
+      text-decoration: none;   /* removes underline */
+  color: black;            /* sets text color */
+    
+    cursor: pointer;
+    outline: black solid 2px;;
+    box-shadow: 0 0 15px grey;
+    padding: 15px 40px;
+}
+
+#get-started:hover{
+    background-color: rgb(232, 232, 232);
+    color: black;
+}
+
+#logo2{
+    height: 200px;
+    width: 200px;
+    border-radius: 50%;
+    box-shadow: 0 0 15px grey ;
+}
+#account-div{
+    text-align: center;
+    
+}
+/* Form container */
+#account-form {
+  max-width: 500px;       /* width of form */
+  margin: 50px auto;      /* center horizontally with spacing from top */
+  padding: 30px;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Labels */
+#account-form label {
+  display: block;         /* each label on its own line */
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+/* Inputs and select */
+#account-form input,
+#account-form select {
+  width: 100%;            /* full width inside form */
+  padding: 10px 15px;
+  margin-bottom: 20px;    /* space between fields */
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 1em;
+  box-sizing: border-box;
+}
+
+/* Checkboxes for show/hide password */
+#account-form input[type="checkbox"] {
+  width: auto;
+  margin-right: 10px;
+}
+
+/* Submit button */
+#create-account {
+  
+  width: 100%;
+  padding: 12px;
+  font-size: 1.2em;
+  border: 2px solid black;
+  border-radius: 12px;
+  cursor: pointer;
+  box-shadow: 0 0 15px grey;
+  text-decoration: none; /* removes underline */
+  color: black;          /* text color */
+  display: inline-block;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.button:hover {
+  background-color: rgb(229, 227, 227);
+}
+
+
+
+#create-account:hover {
+  background-color: rgb(232, 232, 232);
+}
+
+/* Error message */
+#error-msg {
+  color: red;
+  font-weight: 600;
+  margin-top: -10px;
+  margin-bottom: 15px;
+  display: none;
+  text-align: center;
+}
+
+#logo3{
+     height: 200px;
+    width: 200px;
+    border-radius: 50%;
+    box-shadow: 0 0 15px grey ;
+}
+#websitetypediv{
+    text-align :center;
+
+}
+#websitetypebtns{
+    margin-top: 80px;
+    font-family: poppins, sans-serif;
+    ;
+}
+
+#sp{
+    margin-right: 25px;
+    padding: 10px 20px;
+    border: 2px solid black;
+    font-size: 2em;
+    background-color: white;
+    color: black; /* text color */
+    text-decoration: none; /* remove underline */
+    display: inline-block; /* keeps button shape */
+     box-shadow: 0 0 15px grey;
+    
+}
+#ec{
+    margin-left: 25px;
+    padding: 10px 20px;
+    border: 2px solid black;
+    font-size: 2em;
+    background-color: white;
+    color: black; /* text color */
+    text-decoration: none; /* remove underline */
+    display: inline-block; /* keeps button shape */
+     box-shadow: 0 0 15px grey;
+    
+}
+#websitetypebtns a:hover{
+    background-color: rgb(232, 232, 232);
+    color: black;
+    
+}
+body {
+  background-color:  rgb(232, 232, 232);
+}
+#elogo {
+   height: 150px;
+    width: 150px;
+    border-radius: 50%;
+    box-shadow: 0 0 15px grey ;
+    
+}
+#ediv1{
+  text-align: center;
+}
+ .template-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 per row */
+    gap: 20px;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .template-card {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 12px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    height: 250px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .template-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+  }
+  #tempimg1 {
+     width: 100%;
+  height: 100%;
+  object-fit: cover;   /* fills box, may crop edges */
+  border-radius: 10px; /* optional: rounded corners */
+}

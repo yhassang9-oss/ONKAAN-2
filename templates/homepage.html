@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Template 1</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="editor-area">
+    <div id="index">
+        <header id="header">
+            <div id="div1">
+                <img src="../images/your logo.jpg"><br>
+                <h2 id="heading title">Your Title</h2>
+            </div>
+        </header>
+
+        <!-- Editable area starts here -->
+        
+            <div id="div2">
+                <input type="text" placeholder="Search..." id="searchbar">
+                <button type="submit" id="btn1">Search</button> <br><br>
+
+                <nav>
+                    <ul class="horizontal-list" id="nav">
+                        <li><a href="homepage.html" id="home">Home</a></li>
+                        <li><a href="#" id="about">About</a></li>
+                        <li><a href="#" id="services">Services</a></li>
+                        <li><a href="#" id="contact">Contact</a></li>
+                    </ul>
+                </nav><br><br>
+
+                <div class="slideshow-container">
+                    <img class="slide" src="../images/banner1.jpg" alt="Banner 1">
+                    <img class="slide" src="../images/banner2.jpg" alt="Banner 2">
+                    <img class="slide" src="../images/banner3.jpg" alt="Banner 3" id="banner3">
+
+                    <!-- Arrows -->
+                    <a class="prev" onclick="changeSlide(-1)">&#10094;</a>
+                    <a class="next" onclick="changeSlide(1)">&#10095;</a>
+                </div>
+
+                <a href="product.html" class="product-link">
+                    <div class="product-box">
+                        <img src="../images/product.jpg" alt="Product Image" class="product-image">
+                        <h2 class="product-title">Product Name</h2>
+                        <p class="product-price">₹999</p>
+                        <button class="buy-now">Buy Now</button>
+                    </div>
+                </a>
+            </div>
+        </div>
+        <!-- Editable area ends here -->
+
+        <script src="index.js"></script>
+        <footer id="footer1">© 2025 Your Company</footer>
+    </div>
+</body>
+</html>

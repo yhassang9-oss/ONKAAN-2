@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Template Engine</title>
+  <link rel="stylesheet" href="engine.css">
+</head>
+<body>
+  <!-- Topbar -->
+  <header class="topbar">
+    <h1>ONKAAN Editor</h1>
+    <button class="save-btn">Save</button>
+  </header>
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <h2>Tools</h2>
+    <ul>
+      <li><button id="textTool" class="tool-btn">Text</button></li>
+      <li><button id="selecttool" class="tool-btn">select</button></li>
+      <li><button id="undo" class="tool-btn">Undo</button></li>
+      <li><button id="redo" class="tool-btn">Redo</button></li>
+      <li><button id="color" class="tool-btn">Color</button></li>
+      <li><button id="image" class="tool-btn">Change Image</button></li>
+      <li><button id="Buttons" class="tool-btn">Buttons</button></li>
+      <li><button id="savePageBtn" class="tool-btn">Save</button></li>
+      <li><button id="resetTool" class="tool-btn">Reset</button></li>
+
+
+    </ul>
+  </aside>
+
+  <!-- Preview -->
+  <main class="preview-area">
+    <div class="preview-wrapper">
+      <iframe id="previewFrame" src="templates/homepage.html"></iframe>
+    </div>
+  </main>
+
+  <!-- Button Design Panel -->
+  <div id="buttonDesignPanel" style="display:none; position:absolute; top:50px; left:220px; background:#fff; border:1px solid #ccc; padding:10px; z-index:9999;">
+  <h3>Buy Now Designs</h3>
+  <div class="designs">
+    <button class="buy1">1</button>
+    <button class="buy2">2</button>
+    <button class="buy3">3</button>
+    <button class="buy4">4</button>
+    <button class="buy5">5</button>
+  </div>
+  <h3>Add to Cart Designs</h3>
+  <div class="designs">
+    <button class="cart1">1</button>
+    <button class="cart2">2</button>
+    <button class="cart3">3</button>
+    <button class="cart4">4</button>
+    <button class="cart5">5</button>
+  </div>
+</div>
+
+
+  <!-- Scripts -->
+  <script src="engine.js"></script>
+</body>
+</html> 
+
+
+

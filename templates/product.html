@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Template 1 Product Page</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: #f9f9f9;
+    }
+
+    #productcontainer {
+      display: flex;
+      gap: 20px;
+      padding: 30px;
+      max-width: 1200px;
+      margin: auto;
+    }
+
+    /* Left side image */
+    .product-img {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    .product-img img {
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 10px;
+      background: white;
+    }
+
+    /* Right side details */
+    .product-info {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .box {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+      width: 100%;
+    }
+
+    #productname {
+      font-size: 20px;
+      margin: 0 0 10px;
+      font-weight: bold;
+    }
+
+    #productprice {
+      font-size: 22px;
+      color: #e53935;
+      margin: 0;
+    }
+
+    #descriptionh1 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    #description {
+      line-height: 1.5;
+      white-space: pre-line;
+    }
+
+    #available {
+      font-size: 18px;
+      color: green;
+      margin: 0;
+    }
+
+    /* Buttons */
+    .btns {
+      display: flex;
+      gap: 15px;
+      margin-top: 15px;
+    }
+
+    .btns button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    #buy {
+      background: #ff4081;
+      color: white;
+    }
+
+    #addcart {
+      background: #ffc107;
+      color: black;
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      background: #222;
+      color: #fff;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <header id="productheader">
+    <div id="productcontainer">
+
+      <!-- Left image -->
+      <div class="product-img">
+        <img src="product.jpg" alt="Product">
+      </div>
+
+      <!-- Right details -->
+      <div class="product-info">
+        
+        <div class="box">
+          <h1 id="productname">Canon EOS 1500D DSLR Camera with 18-55mm Lens 24.1MP, Full HD, Wi-Fi & Bluetooth</h1>
+          <h2 id="productprice">₹499.99</h2>
+        </div>
+
+        <div class="box">
+          <h1 id="descriptionh1">Product Details</h1>
+          <p id="description">
+            24.1MP APS-C CMOS Sensor
+            Full HD 1080p Video Recording
+            9-point Autofocus System
+            ISO 100–6400 (Expandable 12800)
+            Built-in Wi-Fi, Bluetooth
+            3.0" LCD Display
+
+            In the Box: Camera Body, 18-55mm Lens, Battery, Charger, Strap, 16GB SD Card, Manual
+            Dimensions: 129×101×77 mm | 475g
+
+            Why Buy:
+            Easy to use, sharp image quality, instant sharing, and lightweight design — perfect for beginners and hobby photographers.
+          </p>
+        </div>
+
+        <div class="box">
+          <h1 id="available">Available</h1>
+        </div>
+
+        <div class="box btns">
+          <button id="buy">Buy Now</button>
+          <button id="addcart">Add to Cart</button>
+        </div>
+
+      </div>
+    </div>
+  </header>
+
+  <script>
+    // Only handle navigation for this page
+    document.getElementById("buy").addEventListener("click", () => {
+      window.location.href = "buynow.html";
+    });
+
+    document.getElementById("addcart").addEventListener("click", () => {
+      window.location.href = "index.html";
+    });
+  </script>
+
+  <footer id="footer2">© 2025 Your Company</footer>
+</body>
+</html>

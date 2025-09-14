@@ -1,0 +1,211 @@
+/* =============================
+   RESET + BASE
+============================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, sans-serif;
+  background: linear-gradient(135deg, #3b82f6, #06b6d4); /* Outer gradient */
+  color: #1A1A1A;
+  line-height: 1.7;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 80px 20px;
+  scroll-behavior: smooth;
+}
+
+/* ============================= 
+   Container box 
+============================= */
+#eheader1 {
+  width: 100%;
+  max-width: 1280px;
+  background: #ffffff; /* Solid white background */
+  border-radius: 24px;
+  padding: 50px 40px;
+  margin-bottom: 60px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Remove the pseudo-elements so gradient overlay doesn’t cover white */
+#eheader1::before,
+#eheader1::after {
+  display: none;
+}
+
+/* ============================= 
+   Logo + Heading 
+============================= */
+#ediv1 {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#elogo {
+  width: 140px;
+  margin-bottom: 40px;
+  transition: transform 0.4s ease, filter 0.4s ease;
+  border-radius: 50%;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.25));
+}
+
+#elogo:hover {
+  transform: scale(1.1) rotate(6deg);
+  filter: drop-shadow(0 6px 16px rgba(59, 130, 246, 0.4));
+}
+
+#eh1 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #3b82f6; /* Blue text inside white container */
+  margin-bottom: 40px;
+}
+
+/* ============================= 
+   Template grid 
+============================= */
+/* ============================= 
+   Template grid 
+============================= */
+/* ============================= 
+   Template grid 
+============================= */
+.template-grid {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 cards per row */
+  gap: 40px; /* Space between cards */
+  padding: 0 15px;
+}
+
+/* Template cards */
+/* Template cards */
+.template-card {
+  background: rgba(255, 255, 255, 0.95); 
+  border-radius: 24px;
+  padding: 30px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s ease;
+  text-align: center;
+  width: 100%; /* Fill the grid column */
+}
+
+/* Hover effect */
+.template-card:hover {
+  transform: scale(1.05); /* Grow by 5% */
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25); /* Bigger shadow */
+}
+
+
+.template-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 16px;
+  margin-bottom: 25px;
+  cursor: pointer;
+}
+
+.template-card h2 {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #3b82f6;
+  text-align: center;
+}
+
+/* ============================= 
+   RESPONSIVE
+============================= */
+@media (max-width: 1024px) {
+  .template-grid {
+    grid-template-columns: repeat(3, 1fr); /* 3 cards per row */
+    gap: 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .template-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 cards per row */
+    gap: 25px;
+  }
+}
+
+@media (max-width: 480px) {
+  .template-grid {
+    grid-template-columns: 1fr; /* 1 card per row */
+    gap: 20px;
+  }
+}
+
+
+/* =============================
+   ANIMATIONS
+============================= */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes zoomIn {
+  from { transform: scale(0.7); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes fadeUp {
+  from { transform: translateY(20px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+/* =============================
+   RESPONSIVE
+============================= */
+@media (max-width: 1024px) {
+  #eheader1 { max-width: 960px; padding: 45px 30px; }
+  .template-grid { gap: 30px; }
+}
+
+@media (max-width: 768px) {
+  #eheader1 { padding: 40px 25px; margin-bottom: 40px; }
+  #eh1 { font-size: 2.2rem; }
+  .template-card { padding: 20px; }
+  .template-card h2 { font-size: 1.4rem; }
+  #elogo { width: 120px; }
+}
+
+@media (max-width: 480px) {
+  #eheader1 { padding: 25px 15px; margin-bottom: 30px; }
+  #eh1 { font-size: 1.8rem; }
+  .template-grid { grid-template-columns: 1fr; gap: 25px; }
+  .template-card { padding: 15px; }
+  .template-card h2 { font-size: 1.3rem; }
+  .template-card img { height: 180px; }
+  #elogo { width: 100px; }
+}
+
+@media (max-width: 320px) {
+  body { padding: 60px 10px; }
+  #eheader1 { padding: 20px 10px; }
+  #eh1 { font-size: 1.6rem; }
+  .template-card { padding: 12px; }
+  .template-card h2 { font-size: 1.2rem; }
+  .template-card img { height: 160px; border-radius: 12px; }
+  #elogo { width: 90px; }
+}
