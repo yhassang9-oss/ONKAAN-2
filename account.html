@@ -67,50 +67,43 @@
     </form>
   </div>
 
-  <script>
-    const form = document.getElementById("account-form");
-    form.addEventListener("submit", function(e) {
-      e.preventDefault(); // prevents page reload
-      // Add your validation or redirection here
-      alert("Form submitted!"); 
+ <script>
+const form = document.getElementById("account-form");
+const scriptURL = 'https://script.google.com/macros/s/AKfycbzF-OHhBq260AabRkLJ5xONiktstkuVpiDjwqpc3rxPPXEgcGDFA14HWljULSOACVXwyQ/exec';
+
+// Toggle password visibility
+document.getElementById("show-password").addEventListener("change", function() {
+    document.getElementById("password").type = this.checked ? "text" : "password";
+});
+document.getElementById("show-confirm-password").addEventListener("change", function() {
+    document.getElementById("confirm-password").type = this.checked ? "text" : "password";
+});
+
+// Submit form and send to Google Apps Script
+form.addEventListener('submit', e => {
+    e.preventDefault();
+
+    fetch(scriptURL, {
+        method: 'POST',
+        body: new FormData(form)
+    })
+    .then(response => response.json())
+    .then(res => {
+        if(res.result === "success") {
+            window.location.href = "websitetype.html";
+        } else {
+            alert("Something went wrong. Try again.");
+            console.error(res.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error!', error.message);
+        alert("Error connecting to Google Sheets.");
     });
+});
+</script>
 
-    const password = document.getElementById("password");
-    const showPassword = document.getElementById("show-password");
-    showPassword.addEventListener("change", function() {
-      password.type = this.checked ? "text" : "password";
-    });
-
-    const confirmPassword = document.getElementById("confirm-password");
-    const showConfirm = document.getElementById("show-confirm-password");
-    showConfirm.addEventListener("change", function() {
-      confirmPassword.type = this.checked ? "text" : "password";
-    });
-       const form = document.getElementById("account-form");
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbzF-OHhBq260AabRkLJ5xONiktstkuVpiDjwqpc3rxPPXEgcGDFA14HWljULSOACVXwyQ/exec';
-
-        form.addEventListener('submit', e => {
-            e.preventDefault(); // Prevent page reload
-
-            fetch(scriptURL, {
-                method: 'POST',
-                body: new FormData(form)
-            })
-            .then(response => response.json()) // Expect JSON from the script
-            .then(res => {
-                if(res.result === "success") {
-                    window.location.href = "websitetype.html"; // Redirect on success
-                } else {
-                    alert("Something went wrong. Try again.");
-                    console.error(res.error);
-                }
-            })
-            .catch(error => {
-                console.error('Error!', error.message);
-                alert("Error connecting to Google Sheets.");
-            });
-        });
-  </script>
 </body>
 </html>
+
 
