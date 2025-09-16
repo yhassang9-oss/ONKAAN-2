@@ -6,6 +6,8 @@ const colorTool = document.getElementById("color");
 const imageTool = document.getElementById("image");
 const buttonTool = document.getElementById("Buttons");
 const previewFrame = document.getElementById("previewFrame");
+const publishBtn = document.getElementById("publish");
+const resetTool = document.getElementById("resetTool");
 
 let activeTool = null;
 let selectedElement = null;
@@ -33,6 +35,7 @@ function deactivateAllTools() {
 // --- History ---
 function saveHistory() {
   const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
+  if (!iframeDoc) return;
   historyStack = historyStack.slice(0, historyIndex + 1);
   historyStack.push(iframeDoc.body.innerHTML);
   historyIndex++;
@@ -43,6 +46,7 @@ function undo() {
   if (historyIndex > 0) {
     historyIndex--;
     const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
+    if (!iframeDoc) return;
     iframeDoc.body.innerHTML = historyStack[historyIndex];
   }
 }
@@ -51,6 +55,7 @@ function redo() {
   if (historyIndex < historyStack.length - 1) {
     historyIndex++;
     const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
+    if (!iframeDoc) return;
     iframeDoc.body.innerHTML = historyStack[historyIndex];
   }
 }
@@ -78,6 +83,8 @@ redoBtn.addEventListener("click", redo);
 // --- Iframe load & click ---
 previewFrame.addEventListener("load", () => {
   const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
+  if (!iframeDoc) return;
+
   saveHistory();
 
   iframeDoc.addEventListener("click", (e) => {
@@ -172,6 +179,7 @@ function makeResizable(el, doc) {
 colorTool.addEventListener("click", () => {
   if (!selectedElement) { alert("Select an element first!"); return; }
   const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
+  if (!iframeDoc) return;
 
   if (colorPanel) { colorPanel.remove(); colorPanel = null; return; }
 
@@ -221,6 +229,8 @@ imageTool.addEventListener("click", () => {
 buttonTool.addEventListener("click", () => {
   if (!selectedElement || selectedElement.tagName !== "BUTTON") { alert("Select a button first!"); return; }
   const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
+  if (!iframeDoc) return;
+
   if (!buttonPanel) {
     buttonPanel = iframeDoc.createElement("div");
     buttonPanel.id = "buttonDesignPanel";
@@ -244,89 +254,73 @@ buttonTool.addEventListener("click", () => {
       </div>`;
     iframeDoc.body.appendChild(buttonPanel);
 
-    buttonPanel.querySelectorAll(".designs:nth-of-type(1) button").forEach(btn => {
-      btn.addEventListener("click", () => { if (selectedElement) selectedElement.className = btn.className; saveHistory(); });
-    });
-    buttonPanel.querySelectorAll(".designs:nth-of-type(2) button").forEach(btn => {
-      btn.addEventListener("click", () => { if (selectedElement) selectedElement.className = btn.className; saveHistory(); });
+    buttonPanel.querySelectorAll(".designs button").forEach(btn => {
+      btn.addEventListener("click", () => {
+        if (!selectedElement) return;
+        selectedElement.className = btn.className;
+        saveHistory();
+      });
     });
   } else {
     buttonPanel.style.display = buttonPanel.style.display === "none" ? "block" : "none";
   }
 });
 
-// --- Remove DB interactions ---
-// Save / Publish buttons now just save locally
-document.querySelector(".save-btn").addEventListener("click", () => {
-  saveHistory();
-  alert("✅ Page saved locally (no database).");
-});
+// --- Publish button ---
+if (publishBtn) {
+  publishBtn.addEventListener("click", () => {
+    const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
+    if (!iframeDoc) return;
+
+    const htmlContent = "<!DOCTYPE html>\n" + iframeDoc.documentElement.outerHTML;
+
+    let cssContent = "";
+    iframeDoc.querySelectorAll("style").forEach(tag => cssContent += tag.innerHTML + "\n");
+
+    let jsContent = "";
+    iframeDoc.querySelectorAll("script").forEach(tag => jsContent += tag.innerHTML + "\n");
+
+    const images = [];
+    iframeDoc.querySelectorAll("img").forEach((img, i) => {
+      try {
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = img.naturalWidth;
+        canvas.height = img.naturalHeight;
+        ctx.drawImage(img, 0, 0);
+        const dataUrl = canvas.toDataURL("image/png");
+        images.push({ name: `image${i+1}.png`, data: dataUrl.split(",")[1] });
+      } catch (err) { console.warn("Skipping image (CORS issue):", img.src); }
+    });
+
+    fetch("https://onkaan-2.onrender.com/publish", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ projectName:"MyProject", html:htmlContent, css:cssContent, js:jsContent, images })
+    })
+    .then(res => res.json())
+    .then(data => alert(data.message || "✅ Files sent successfully!"))
+    .catch(err => alert("❌ Error sending files: " + err));
+  });
+}
 
 // --- Reset ---
-const resetTool = document.getElementById("resetTool");
-if (previewFrame && !previewFrame.dataset.originalSrc) previewFrame.dataset.originalSrc = previewFrame.src || "templates/index.html";
-if (resetTool) resetTool.addEventListener("click", () => {
-  if (!confirm("Reset template?")) return;
-  deactivateAllTools();
-  historyStack=[]; historyIndex=-1; localStorage.removeItem("userTemplate");
-  const orig = previewFrame.dataset.originalSrc;
-  previewFrame.src = orig + "?_reset=" + Date.now();
-});
+if (resetTool) {
+  if (previewFrame && !previewFrame.dataset.originalSrc) previewFrame.dataset.originalSrc = previewFrame.src || "templates/index.html";
+  resetTool.addEventListener("click", () => {
+    if (!confirm("Reset template?")) return;
+    deactivateAllTools();
+    historyStack=[]; historyIndex=-1; localStorage.removeItem("userTemplate");
+    const orig = previewFrame.dataset.originalSrc;
+    previewFrame.src = orig + "?_reset=" + Date.now();
+  });
+}
 
 // --- Load saved template ---
 window.addEventListener("DOMContentLoaded", () => {
   const savedHTML = localStorage.getItem("userTemplate");
   if (savedHTML) {
     const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
-    // --- Publish button (download HTML locally) ---
-const publishBtn = document.getElementById("publish");
-
-// --- Publish Button ---
-publishBtn.addEventListener("click", () => {
-  const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
-  
-  // Full HTML
-  const htmlContent = "<!DOCTYPE html>\n" + iframeDoc.documentElement.outerHTML;
-
-  // Inline styles
-  let cssContent = "";
-  iframeDoc.querySelectorAll("style").forEach(tag => cssContent += tag.innerHTML + "\n");
-
-  // Inline scripts
-  let jsContent = "";
-  iframeDoc.querySelectorAll("script").forEach(tag => jsContent += tag.innerHTML + "\n");
-
-  // Collect images
-  const images = [];
-  iframeDoc.querySelectorAll("img").forEach((img, i) => {
-    try {
-      const canvas = document.createElement("canvas");
-      const ctx = canvas.getContext("2d");
-      canvas.width = img.naturalWidth;
-      canvas.height = img.naturalHeight;
-      ctx.drawImage(img, 0, 0);
-      const dataUrl = canvas.toDataURL("image/png"); // base64
-      images.push({ name: `image${i + 1}.png`, data: dataUrl.split(",")[1] });
-    } catch (err) {
-      console.warn("Skipping image (CORS issue):", img.src);
-    }
-  });
-
-  // Send all files to server
-  fetch("https://onkaan-2.onrender.com/publish", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      projectName: "MyProject",
-      html: htmlContent,
-      css: cssContent,
-      js: jsContent,
-      images
-    })
-  })
-  .then(res => res.json())
-  .then(data => alert(data.message || "✅ Files sent successfully!"))
-  .catch(err => alert("❌ Error sending files: " + err));
+    if (iframeDoc) iframeDoc.open(), iframeDoc.write(savedHTML), iframeDoc.close();
+  }
 });
-
-
