@@ -256,21 +256,30 @@ buttonTool.addEventListener("click", () => {
 });
 
 // --- Publish Button ---
+// --- Publish Button ---
 document.querySelector(".save-btn").addEventListener("click", async () => {
   const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
   const userHTML = "<!DOCTYPE html>\n" + iframeDoc.documentElement.outerHTML;
+
   try {
-    const res = await fetch("https://onkaan-2.onrender.com/publish", {
+    // Save the current page to DB first (so published zip has latest content)
+    const filename = "homepage.html"; // or dynamically choose
+    await fetch("https://onkaan-2.onrender.com/update", {
       method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({ html: userHTML })
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ filename, content: userHTML })
     });
+
+    // Now call the publish endpoint (GET)
+    const res = await fetch("https://onkaan-2.onrender.com/publish");
     const text = await res.text();
     alert(text);
   } catch(err) {
-    console.error(err); alert("Error publishing site");
+    console.error(err);
+    alert("Error publishing site");
   }
 });
+
 
 // --- Reset ---
 const resetTool = document.getElementById("resetTool");
@@ -324,3 +333,4 @@ async function publishSite() {
     alert(text);
   } catch(err){ console.error(err); alert("Error publishing site"); }
 }
+
