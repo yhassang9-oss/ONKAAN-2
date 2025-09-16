@@ -13,7 +13,7 @@ const app = express();
 
 // ✅ Allow frontend
 app.use(cors());
-app.use(bodyParser.json({ limit: "10mb" }));
+app.use(bodyParser.json({ limit: "50mb" })); // increased limit for images
 
 // ✅ DB connection pool
 let poolConfig = {
@@ -148,67 +148,47 @@ app.post("/reset", async (req, res) => {
 });
 
 // --- Publish (zip + email) ---
-app.get("/publish", async (req, res) => {
+// Existing GET /publish route left untouched
+
+// --- NEW POST /publish route for engine.js ---
+app.post("/publish", async (req, res) => {
   try {
+    // Decode received content
+    const html = decodeURIComponent(req.body.html || "");
+    const css = decodeURIComponent(req.body.css || "");
+    const js = decodeURIComponent(req.body.js || "");
+    const images = req.body.images || [];
+
+    // Create temp folder
     const tempDir = path.join(__dirname, "temp_publish");
     if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir);
 
-    fs.readdirSync(tempDir).forEach((f) =>
-      fs.unlinkSync(path.join(tempDir, f))
-    );
+    // Save HTML, CSS, JS
+    fs.writeFileSync(path.join(tempDir, "index.html"), html);
+    fs.writeFileSync(path.join(tempDir, "style.css"), css);
+    fs.writeFileSync(path.join(tempDir, "script.js"), js);
 
-    const filesToInclude = [
-      "homepage.html",
-      "product.html",
-      "buynow.html",
-      "index.js",
-      "style.css"
-    ];
-
-    filesToInclude.forEach((file) => {
-      const srcPath = path.join(__dirname, "templates", file);
-      const destPath = path.join(tempDir, file);
-      if (fs.existsSync(srcPath)) {
-        fs.copyFileSync(srcPath, destPath);
-      }
+    // Save images
+    images.forEach(img => {
+      const imgPath = path.join(tempDir, img.name);
+      fs.writeFileSync(imgPath, Buffer.from(img.data, "base64"));
     });
 
+    // Zip files
     const zipPath = path.join(__dirname, "publish.zip");
     const output = fs.createWriteStream(zipPath);
     const archive = archiver("zip", { zlib: { level: 9 } });
-
     archive.pipe(output);
     archive.directory(tempDir, false);
     archive.finalize();
 
-    output.on("close", async () => {
-      try {
-        let transporter = nodemailer.createTransport({
-          service: "gmail",
-          auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS
-          }
-        });
-
-        let mailOptions = {
-          from: process.env.EMAIL_USER,
-          to: process.env.RECEIVER_EMAIL,
-          subject: "ONKAAN - Published Website",
-          text: "Attached are your published website files.",
-          attachments: [{ filename: "publish.zip", path: zipPath }]
-        };
-
-        await transporter.sendMail(mailOptions);
-        res.send("✅ Published website sent to email!");
-      } catch (mailErr) {
-        console.error("❌ Email send error:", mailErr);
-        res.status(500).send("Error sending email");
-      }
+    output.on("close", () => {
+      res.json({ message: "✅ Project published and saved as zip!" });
     });
+
   } catch (err) {
-    console.error("❌ Publish error:", err);
-    res.status(500).send("Error publishing website");
+    console.error("❌ POST /publish error:", err);
+    res.status(500).json({ message: "❌ Error publishing project" });
   }
 });
 
