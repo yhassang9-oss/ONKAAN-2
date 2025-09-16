@@ -268,6 +268,7 @@ buttonTool.addEventListener("click", () => {
 
 // --- Publish button ---
 // --- Publish button ---
+// --- Publish button ---
 if (publishBtn) {
   publishBtn.addEventListener("click", () => {
     const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
@@ -312,6 +313,7 @@ if (publishBtn) {
 }
 
 
+
 // --- Reset ---
 if (resetTool) {
   if (previewFrame && !previewFrame.dataset.originalSrc) previewFrame.dataset.originalSrc = previewFrame.src || "templates/index.html";
@@ -332,4 +334,5 @@ window.addEventListener("DOMContentLoaded", () => {
     if (iframeDoc) iframeDoc.open(), iframeDoc.write(savedHTML), iframeDoc.close();
   }
 });
+
 
