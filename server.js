@@ -6,18 +6,16 @@ const archiver = require("archiver");
 const fs = require("fs");
 const path = require("path");
 const bodyParser = require("body-parser");
-const mysql = require("mysql2/promise"); // ✅ MySQL/TiDB client
-const cors = require("cors"); // ✅ allow frontend
+const mysql = require("mysql2/promise");
+const cors = require("cors");
 
 const app = express();
 
-// ✅ allow frontend calls
+// ✅ Allow frontend
 app.use(cors());
-
-// ✅ parse JSON with bigger size (for HTML, base64 images)
 app.use(bodyParser.json({ limit: "10mb" }));
 
-// ✅ TiDB/MySQL connection pool
+// ✅ DB connection pool
 let poolConfig = {
   host: process.env.DB_HOST,
   user: process.env.DB_USERNAME,
@@ -25,38 +23,32 @@ let poolConfig = {
   database: process.env.DB_DATABASE,
   port: process.env.DB_PORT
 };
-
-// Optional SSL (only if CA is provided)
 if (process.env.DB_CA) {
   poolConfig.ssl = { ca: process.env.DB_CA };
 }
 const pool = mysql.createPool(poolConfig);
 
-// Home route (default landing page)
+// --- Home route ---
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "templates", "homepage.html"));
 });
 
-// --- Template route (iframe live preview) ---
+// --- Template preview (iframe) ---
 app.get("/template/:filename", async (req, res) => {
   let { filename } = req.params;
-  if (!filename.endsWith(".html")) filename += ".html"; // normalize
+  if (!filename.endsWith(".html")) filename += ".html";
 
   try {
-    // 1. Look for cached version in DB
     const [rows] = await pool.query(
       "SELECT content FROM pages WHERE filename = ? LIMIT 1",
       [filename]
     );
-
     if (rows.length > 0) {
       res.type("html").send(rows[0].content);
       return;
     }
 
-    // 2. Look in /templates folder
     let filePath = path.join(__dirname, "templates", filename);
-
     if (fs.existsSync(filePath)) {
       res.sendFile(filePath);
     } else {
@@ -70,23 +62,20 @@ app.get("/template/:filename", async (req, res) => {
     console.error("❌ DB Error in /template:", err);
     res
       .type("html")
-      .send(
-        "<!DOCTYPE html><html><body><h3>❌ Database error while loading template</h3></body></html>"
-      );
+      .send("<!DOCTYPE html><html><body><h3>❌ Database error</h3></body></html>");
   }
 });
 
-// Auto-serve any HTML page by name (with DB support)
+// --- Auto serve by name ---
 app.get("/:page", async (req, res, next) => {
   let filename = req.params.page;
-  if (!filename.endsWith(".html")) filename += ".html"; // normalize
+  if (!filename.endsWith(".html")) filename += ".html";
 
   try {
     const [rows] = await pool.query(
       "SELECT content FROM pages WHERE filename = ? LIMIT 1",
       [filename]
     );
-
     if (rows.length > 0) {
       res.type("html").send(rows[0].content);
       return;
@@ -104,7 +93,7 @@ app.get("/:page", async (req, res, next) => {
   }
 });
 
-// ✅ Save edits permanently in DB
+// --- Save page ---
 app.post("/update", async (req, res) => {
   let { filename, content } = req.body;
   if (!filename || !content) {
@@ -112,8 +101,7 @@ app.post("/update", async (req, res) => {
       .status(400)
       .json({ success: false, error: "Missing filename or content" });
   }
-
-  if (!filename.endsWith(".html")) filename += ".html"; // normalize
+  if (!filename.endsWith(".html")) filename += ".html";
 
   try {
     await pool.query(
@@ -127,17 +115,16 @@ app.post("/update", async (req, res) => {
   }
 });
 
-// ✅ Load saved template by ID
+// --- Load saved template ---
 app.get("/api/load/:id", async (req, res) => {
   let websiteId = req.params.id;
-  if (!websiteId.endsWith(".html")) websiteId += ".html"; // normalize
+  if (!websiteId.endsWith(".html")) websiteId += ".html";
 
   try {
     const [rows] = await pool.query(
       "SELECT content FROM pages WHERE filename = ? LIMIT 1",
       [websiteId]
     );
-
     if (rows.length > 0) {
       res.json({ success: true, template: rows[0].content });
     } else {
@@ -145,13 +132,11 @@ app.get("/api/load/:id", async (req, res) => {
     }
   } catch (err) {
     console.error("❌ DB Error in /api/load:", err);
-    res
-      .status(500)
-      .json({ success: false, error: "Failed to load template" });
+    res.status(500).json({ success: false, error: "Failed to load template" });
   }
 });
 
-// ✅ Reset pages (clear DB)
+// --- Reset all pages ---
 app.post("/reset", async (req, res) => {
   try {
     await pool.query("DELETE FROM pages");
@@ -162,18 +147,16 @@ app.post("/reset", async (req, res) => {
   }
 });
 
-// ✅ Publish only fixed template files
+// --- Publish (zip + email) ---
 app.get("/publish", async (req, res) => {
   try {
     const tempDir = path.join(__dirname, "temp_publish");
     if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir);
 
-    // Clear old files
     fs.readdirSync(tempDir).forEach((f) =>
       fs.unlinkSync(path.join(tempDir, f))
     );
 
-    // ✅ Files to include
     const filesToInclude = [
       "homepage.html",
       "product.html",
@@ -182,17 +165,14 @@ app.get("/publish", async (req, res) => {
       "style.css"
     ];
 
-    // Copy them into temp folder
     filesToInclude.forEach((file) => {
       const srcPath = path.join(__dirname, "templates", file);
       const destPath = path.join(tempDir, file);
-
       if (fs.existsSync(srcPath)) {
         fs.copyFileSync(srcPath, destPath);
       }
     });
 
-    // ✅ Zip the folder
     const zipPath = path.join(__dirname, "publish.zip");
     const output = fs.createWriteStream(zipPath);
     const archive = archiver("zip", { zlib: { level: 9 } });
@@ -203,7 +183,6 @@ app.get("/publish", async (req, res) => {
 
     output.on("close", async () => {
       try {
-        // 5. Email the zip
         let transporter = nodemailer.createTransport({
           service: "gmail",
           auth: {
@@ -233,7 +212,7 @@ app.get("/publish", async (req, res) => {
   }
 });
 
-// Start server
+// --- Start server ---
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () =>
   console.log(`✅ Server running on http://localhost:${PORT}`)
