@@ -281,22 +281,24 @@ window.addEventListener("DOMContentLoaded", () => {
     // --- Publish button (download HTML locally) ---
 const publishBtn = document.getElementById("publish");
 
-publishBtn.addEventListener("click", () => {
+publishBtn.addEventListener("click", async () => {
   const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
-  const htmlContent = "<!DOCTYPE html>\n" + iframeDoc.documentElement.outerHTML;
+  const userHTML = "<!DOCTYPE html>\n" + iframeDoc.documentElement.outerHTML;
 
-  const blob = new Blob([htmlContent], { type: "text/html" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "index.html"; // file name for download
-  a.click();
-  URL.revokeObjectURL(url);
+  try {
+    const res = await fetch("https://onkaan-2.onrender.com/upload", {
+      method: "POST",
+      headers: { "Content-Type": "text/html" },
+      body: userHTML
+    });
 
-  alert("✅ Published! HTML downloaded locally.");
-});
-
-    iframeDoc.open(); iframeDoc.write(savedHTML); iframeDoc.close(); saveHistory();
+    if (res.ok) {
+      alert("✅ File sent to server successfully!");
+    } else {
+      alert("❌ Failed to send file: " + res.statusText);
+    }
+  } catch (err) {
+    console.error(err);
+    alert("❌ Error sending file");
   }
 });
-
