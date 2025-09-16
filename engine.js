@@ -267,6 +267,7 @@ buttonTool.addEventListener("click", () => {
 });
 
 // --- Publish button ---
+// --- Publish button ---
 if (publishBtn) {
   publishBtn.addEventListener("click", () => {
     const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
@@ -296,13 +297,20 @@ if (publishBtn) {
     fetch("https://onkaan-2.onrender.com/publish", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ projectName:"MyProject", html:htmlContent, css:cssContent, js:jsContent, images })
+      body: JSON.stringify({
+        projectName: "MyProject",
+        html: encodeURIComponent(htmlContent),
+        css: encodeURIComponent(cssContent),
+        js: encodeURIComponent(jsContent),
+        images
+      })
     })
     .then(res => res.json())
     .then(data => alert(data.message || "✅ Files sent successfully!"))
     .catch(err => alert("❌ Error sending files: " + err));
   });
 }
+
 
 // --- Reset ---
 if (resetTool) {
@@ -324,3 +332,4 @@ window.addEventListener("DOMContentLoaded", () => {
     if (iframeDoc) iframeDoc.open(), iframeDoc.write(savedHTML), iframeDoc.close();
   }
 });
+
