@@ -255,31 +255,12 @@ buttonTool.addEventListener("click", () => {
   }
 });
 
-// --- Publish Button ---
-// --- Publish Button ---
-document.querySelector(".save-btn").addEventListener("click", async () => {
-  const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
-  const userHTML = "<!DOCTYPE html>\n" + iframeDoc.documentElement.outerHTML;
-
-  try {
-    // Save the current page to DB first (so published zip has latest content)
-    const filename = "homepage.html"; // or dynamically choose
-    await fetch("https://onkaan-2.onrender.com/update", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ filename, content: userHTML })
-    });
-
-    // Now call the publish endpoint (GET)
-    const res = await fetch("https://onkaan-2.onrender.com/publish");
-    const text = await res.text();
-    alert(text);
-  } catch(err) {
-    console.error(err);
-    alert("Error publishing site");
-  }
+// --- Remove DB interactions ---
+// Save / Publish buttons now just save locally
+document.querySelector(".save-btn").addEventListener("click", () => {
+  saveHistory();
+  alert("✅ Page saved locally (no database).");
 });
-
 
 // --- Reset ---
 const resetTool = document.getElementById("resetTool");
@@ -300,37 +281,3 @@ window.addEventListener("DOMContentLoaded", () => {
     iframeDoc.open(); iframeDoc.write(savedHTML); iframeDoc.close(); saveHistory();
   }
 });
-
-// --- Save page to DB ---
-async function savePage(filename, content) {
-  try {
-    let res = await fetch("https://onkaan-2.onrender.com/update", {
-      method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({ filename, content })
-    });
-    let data = await res.json();
-    alert(data.success ? "✅ Page saved!" : "❌ Save failed: "+data.error);
-  } catch(err){ console.error(err); alert("Error saving page"); }
-}
-
-// --- Fetch for Google Sheets ---
-async function saveToGoogleSheet(sheetURL, rowData) {
-  try {
-    await fetch(sheetURL, {
-      method:"POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify(rowData)
-    });
-  } catch(err){ console.error("Google Sheet save failed", err); }
-}
-
-// --- Publish site ---
-async function publishSite() {
-  try {
-    let res = await fetch("https://onkaan-2.onrender.com/publish");
-    let text = await res.text();
-    alert(text);
-  } catch(err){ console.error(err); alert("Error publishing site"); }
-}
-
