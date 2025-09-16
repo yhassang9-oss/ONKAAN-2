@@ -21,19 +21,24 @@ let poolConfig = {
   user: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_DATABASE,
-  port: process.env.DB_PORT
+  port: process.env.DB_PORT,
 };
 if (process.env.DB_CA) {
   poolConfig.ssl = { ca: process.env.DB_CA };
 }
 const pool = mysql.createPool(poolConfig);
 
-// --- Home route ---
+// --- Health check (JSON) ---
+app.get("/api/health", (req, res) => {
+  res.json({ success: true, message: "✅ Backend is running" });
+});
+
+// --- Home route (HTML) ---
 app.get("/", (req, res) => {
   res.sendFile(path.join(__dirname, "templates", "homepage.html"));
 });
 
-// --- Template preview (iframe) ---
+// --- Template preview (iframe, returns HTML) ---
 app.get("/template/:filename", async (req, res) => {
   let { filename } = req.params;
   if (!filename.endsWith(".html")) filename += ".html";
@@ -66,7 +71,7 @@ app.get("/template/:filename", async (req, res) => {
   }
 });
 
-// --- Auto serve by name ---
+// --- Auto serve by name (HTML) ---
 app.get("/:page", async (req, res, next) => {
   let filename = req.params.page;
   if (!filename.endsWith(".html")) filename += ".html";
@@ -93,7 +98,7 @@ app.get("/:page", async (req, res, next) => {
   }
 });
 
-// --- Save page ---
+// --- Save page (JSON) ---
 app.post("/update", async (req, res) => {
   let { filename, content } = req.body;
   if (!filename || !content) {
@@ -115,7 +120,7 @@ app.post("/update", async (req, res) => {
   }
 });
 
-// --- Load saved template ---
+// --- Load saved template (JSON) ---
 app.get("/api/load/:id", async (req, res) => {
   let websiteId = req.params.id;
   if (!websiteId.endsWith(".html")) websiteId += ".html";
@@ -136,7 +141,7 @@ app.get("/api/load/:id", async (req, res) => {
   }
 });
 
-// --- Reset all pages ---
+// --- Reset all pages (JSON) ---
 app.post("/reset", async (req, res) => {
   try {
     await pool.query("DELETE FROM pages");
@@ -147,7 +152,7 @@ app.post("/reset", async (req, res) => {
   }
 });
 
-// --- NEW POST /publish route for engine.js ---
+// --- Publish project (JSON) ---
 app.post("/publish", async (req, res) => {
   try {
     const html = decodeURIComponent(req.body.html || "");
@@ -164,7 +169,7 @@ app.post("/publish", async (req, res) => {
     fs.writeFileSync(path.join(tempDir, "script.js"), js);
 
     // Save images
-    images.forEach(img => {
+    images.forEach((img) => {
       const imgPath = path.join(tempDir, img.name);
       fs.writeFileSync(imgPath, Buffer.from(img.data, "base64"));
     });
@@ -178,12 +183,11 @@ app.post("/publish", async (req, res) => {
     archive.finalize();
 
     output.on("close", () => {
-      res.json({ message: "✅ Project published and saved as zip!" });
+      res.json({ success: true, message: "✅ Project published and saved as zip!" });
     });
-
   } catch (err) {
     console.error("❌ POST /publish error:", err);
-    res.status(500).json({ message: "❌ Error publishing project" });
+    res.status(500).json({ success: false, message: "❌ Error publishing project" });
   }
 });
 
