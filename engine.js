@@ -286,19 +286,22 @@ publishBtn.addEventListener("click", async () => {
   const userHTML = "<!DOCTYPE html>\n" + iframeDoc.documentElement.outerHTML;
 
   try {
-    const res = await fetch("https://onkaan-2.onrender.com/upload", {
-      method: "POST",
-      headers: { "Content-Type": "text/html" },
-      body: userHTML
+  const publishBtn = document.getElementById("publish");
+
+publishBtn.addEventListener("click", async () => {
+  try {
+    const res = await fetch("https://onkaan-2.onrender.com/publish", {
+      method: "GET"
     });
 
     if (res.ok) {
-      alert("✅ File sent to server successfully!");
+      alert("✅ All template files sent to server successfully!");
     } else {
-      alert("❌ Failed to send file: " + res.statusText);
+      alert("❌ Failed to send files: " + res.statusText);
     }
   } catch (err) {
     console.error(err);
-    alert("❌ Error sending file");
+    alert("❌ Error sending files");
   }
 });
+
