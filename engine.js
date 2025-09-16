@@ -293,7 +293,7 @@ if (publishBtn) {
       } catch (err) { console.warn("Skipping image (CORS issue):", img.src); }
     });
 
-    fetch("https://onkaan-2.onrender.com/publish", { // your backend endpoint
+    fetch("https://onkaan-2-6.onrender.com/publish", { // your backend endpoint
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -330,4 +330,5 @@ window.addEventListener("DOMContentLoaded", () => {
     if (iframeDoc) iframeDoc.open(), iframeDoc.write(savedHTML), iframeDoc.close();
   }
 });
+
 
