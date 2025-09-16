@@ -5,7 +5,6 @@ const redoBtn = document.getElementById("redo");
 const colorTool = document.getElementById("color");
 const imageTool = document.getElementById("image");
 const buttonTool = document.getElementById("Buttons");
-
 const previewFrame = document.getElementById("previewFrame");
 
 let activeTool = null;
@@ -15,7 +14,7 @@ let historyIndex = -1;
 let colorPanel = null;
 let buttonPanel = null;
 
-// --- Tool toggle functions ---
+// --- Tool toggle ---
 function deactivateAllTools() {
   activeTool = null;
   textTool.classList.remove("active-tool");
@@ -31,14 +30,12 @@ function deactivateAllTools() {
   if (buttonPanel) { buttonPanel.style.display = "none"; }
 }
 
-// --- History functions ---
+// --- History ---
 function saveHistory() {
   const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
   historyStack = historyStack.slice(0, historyIndex + 1);
   historyStack.push(iframeDoc.body.innerHTML);
   historyIndex++;
-
-  // Save current state to localStorage
   localStorage.setItem("userTemplate", iframeDoc.documentElement.outerHTML);
 }
 
@@ -60,16 +57,11 @@ function redo() {
 
 // --- Keyboard shortcuts ---
 document.addEventListener("keydown", (e) => {
-  if (e.ctrlKey && e.key === "z") {
-    e.preventDefault();
-    undo();
-  } else if (e.ctrlKey && e.key === "y") {
-    e.preventDefault();
-    redo();
-  }
+  if (e.ctrlKey && e.key === "z") { e.preventDefault(); undo(); }
+  else if (e.ctrlKey && e.key === "y") { e.preventDefault(); redo(); }
 });
 
-// --- Event listeners ---
+// --- Tool buttons ---
 textTool.addEventListener("click", () => {
   if (activeTool === "text") deactivateAllTools();
   else { deactivateAllTools(); activeTool = "text"; textTool.classList.add("active-tool"); }
@@ -83,7 +75,7 @@ selectTool.addEventListener("click", () => {
 undoBtn.addEventListener("click", undo);
 redoBtn.addEventListener("click", redo);
 
-// --- Iframe logic ---
+// --- Iframe load & click ---
 previewFrame.addEventListener("load", () => {
   const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
   saveHistory();
@@ -91,7 +83,7 @@ previewFrame.addEventListener("load", () => {
   iframeDoc.addEventListener("click", (e) => {
     const el = e.target;
 
-    // --- Text Tool ---
+    // Text tool
     if (activeTool === "text") {
       const newText = iframeDoc.createElement("div");
       newText.textContent = "Type here...";
@@ -107,29 +99,23 @@ previewFrame.addEventListener("load", () => {
 
       iframeDoc.body.appendChild(newText);
       newText.focus();
-
       saveHistory();
       deactivateAllTools();
       return;
     }
 
-    // --- Select Tool ---
+    // Select tool
     if (activeTool === "select") {
-      e.preventDefault(); 
-      e.stopPropagation();
-
-      if (selectedElement) {
-        selectedElement.style.outline = "none";
-        removeHandles(iframeDoc);
-      }
+      e.preventDefault(); e.stopPropagation();
+      if (selectedElement) { selectedElement.style.outline = "none"; removeHandles(iframeDoc); }
 
       if (
-        (el.dataset.editable === "true") ||
+        el.dataset.editable === "true" ||
         el.tagName === "BUTTON" ||
         el.tagName === "IMG" ||
         el.classList.contains("slideshow-container") ||
         el.tagName === "DIV" ||
-        ["P", "H1", "H2", "H3", "H4", "H5", "H6", "SPAN", "A", "LABEL"].includes(el.tagName)
+        ["P","H1","H2","H3","H4","H5","H6","SPAN","A","LABEL"].includes(el.tagName)
       ) {
         selectedElement = el;
         selectedElement.style.outline = "2px dashed red";
@@ -142,43 +128,27 @@ previewFrame.addEventListener("load", () => {
           selectedElement.addEventListener("blur", () => saveHistory(), { once: true });
         }
       }
-
-      return; // stop here only if select tool active
+      return;
     }
-
-    // --- If no tool is active, allow normal clicks (template functions work) ---
-    // Nothing is blocked here, click will propagate normally
   });
 });
 
 // --- Resizing ---
 function removeHandles(doc) { doc.querySelectorAll(".resize-handle").forEach(h => h.remove()); }
-
 function makeResizable(el, doc) {
   removeHandles(doc);
   const handle = doc.createElement("div");
   handle.className = "resize-handle";
-  handle.style.width = "10px";
-  handle.style.height = "10px";
-  handle.style.background = "red";
-  handle.style.position = "absolute";
-  handle.style.right = "0";
-  handle.style.bottom = "0";
-  handle.style.cursor = "se-resize";
-  handle.style.zIndex = "9999";
-
-  el.style.position = "relative";
-  el.appendChild(handle);
+  handle.style.cssText = "width:10px;height:10px;background:red;position:absolute;right:0;bottom:0;cursor:se-resize;z-index:9999";
+  el.style.position = "relative"; el.appendChild(handle);
 
   let isResizing = false;
-
   handle.addEventListener("mousedown", (e) => {
     e.preventDefault(); e.stopPropagation();
     isResizing = true;
-    const startX = e.clientX;
-    const startY = e.clientY;
-    const startWidth = parseInt(getComputedStyle(el).width, 10);
-    const startHeight = parseInt(getComputedStyle(el).height, 10);
+    const startX = e.clientX, startY = e.clientY;
+    const startWidth = parseInt(getComputedStyle(el).width,10);
+    const startHeight = parseInt(getComputedStyle(el).height,10);
 
     function resizeMove(ev) {
       if (!isResizing) return;
@@ -198,7 +168,7 @@ function makeResizable(el, doc) {
   });
 }
 
-// --- Color Tool ---
+// --- Color tool ---
 colorTool.addEventListener("click", () => {
   if (!selectedElement) { alert("Select an element first!"); return; }
   const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
@@ -206,32 +176,14 @@ colorTool.addEventListener("click", () => {
   if (colorPanel) { colorPanel.remove(); colorPanel = null; return; }
 
   colorPanel = iframeDoc.createElement("div");
-  colorPanel.style.position = "fixed";
-  colorPanel.style.top = "20px";
-  colorPanel.style.left = "20px";
-  colorPanel.style.background = "#fff";
-  colorPanel.style.border = "1px solid #ccc";
-  colorPanel.style.padding = "10px";
-  colorPanel.style.display = "grid";
-  colorPanel.style.gridTemplateColumns = "repeat(8, 30px)";
-  colorPanel.style.gridGap = "5px";
-  colorPanel.style.zIndex = "9999";
+  colorPanel.style.cssText = "position:fixed;top:20px;left:20px;background:#fff;border:1px solid #ccc;padding:10px;display:grid;grid-template-columns:repeat(8,30px);grid-gap:5px;z-index:9999";
+  colorPanel.addEventListener("mousedown", e => e.stopPropagation());
+  colorPanel.addEventListener("click", e => e.stopPropagation());
 
-  colorPanel.addEventListener("mousedown", (e) => e.stopPropagation());
-  colorPanel.addEventListener("click", (e) => e.stopPropagation());
-
-  const colors = [
-    "#000000","#808080","#C0C0C0","#FFFFFF","#800000","#FF0000","#808000","#FFFF00",
-    "#008000","#00FF00","#008080","#00FFFF","#000080","#0000FF","#800080","#FF00FF"
-  ];
-
+  const colors = ["#000000","#808080","#C0C0C0","#FFFFFF","#800000","#FF0000","#808000","#FFFF00","#008000","#00FF00","#008080","#00FFFF","#000080","#0000FF","#800080","#FF00FF"];
   colors.forEach(c => {
     const swatch = iframeDoc.createElement("div");
-    swatch.style.width = "30px";
-    swatch.style.height = "30px";
-    swatch.style.background = c;
-    swatch.style.cursor = "pointer";
-    swatch.style.border = "1px solid #555";
+    swatch.style.cssText = "width:30px;height:30px;background:"+c+";cursor:pointer;border:1px solid #555";
     swatch.addEventListener("click", () => {
       if (!selectedElement) return;
       if (selectedElement.dataset.editable === "true") selectedElement.style.color = c;
@@ -240,11 +192,10 @@ colorTool.addEventListener("click", () => {
     });
     colorPanel.appendChild(swatch);
   });
-
   iframeDoc.body.appendChild(colorPanel);
 });
 
-// --- Image Tool ---
+// --- Image tool ---
 imageTool.addEventListener("click", () => {
   if (!selectedElement || !(selectedElement.tagName === "IMG" || selectedElement.classList.contains("slideshow-container"))) {
     alert("Select an image or slideshow first."); return;
@@ -266,21 +217,14 @@ imageTool.addEventListener("click", () => {
   };
 });
 
-// --- Button Tool ---
+// --- Button tool ---
 buttonTool.addEventListener("click", () => {
   if (!selectedElement || selectedElement.tagName !== "BUTTON") { alert("Select a button first!"); return; }
   const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
-
   if (!buttonPanel) {
     buttonPanel = iframeDoc.createElement("div");
     buttonPanel.id = "buttonDesignPanel";
-    buttonPanel.style.position = "fixed";
-    buttonPanel.style.top = "50px";
-    buttonPanel.style.left = "20px";
-    buttonPanel.style.background = "#fff";
-    buttonPanel.style.border = "1px solid #ccc";
-    buttonPanel.style.padding = "10px";
-    buttonPanel.style.zIndex = "9999";
+    buttonPanel.style.cssText = "position:fixed;top:50px;left:20px;background:#fff;border:1px solid #ccc;padding:10px;z-index:9999";
     buttonPanel.innerHTML = `
       <h3>Buy Now Designs</h3>
       <div class="designs">
@@ -297,8 +241,7 @@ buttonTool.addEventListener("click", () => {
         <button class="addDesign3">3</button>
         <button class="addDesign4">4</button>
         <button class="addDesign5">5</button>
-      </div>
-    `;
+      </div>`;
     iframeDoc.body.appendChild(buttonPanel);
 
     buttonPanel.querySelectorAll(".designs:nth-of-type(1) button").forEach(btn => {
@@ -313,66 +256,71 @@ buttonTool.addEventListener("click", () => {
 });
 
 // --- Publish Button ---
-document.querySelector(".save-btn").addEventListener("click", () => {
+document.querySelector(".save-btn").addEventListener("click", async () => {
   const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
   const userHTML = "<!DOCTYPE html>\n" + iframeDoc.documentElement.outerHTML;
-  const userCSS = "";
-  const userJS = "";
-
-  fetch("http://localhost:3000/publish", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      projectName: "UserWebsite",
-      html: userHTML,
-      css: userCSS,
-      js: userJS
-    })
-  })
-  .then(res => res.json())
-  .then(data => alert(data.message))
-  .catch(err => console.error(err));
+  try {
+    const res = await fetch("https://onkaan-2.onrender.com/publish", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({ html: userHTML })
+    });
+    const text = await res.text();
+    alert(text);
+  } catch(err) {
+    console.error(err); alert("Error publishing site");
+  }
 });
 
-// --- Reset tool ---
-if (previewFrame && !previewFrame.dataset.originalSrc) {
-  previewFrame.dataset.originalSrc = previewFrame.src || "templates/index.html";
-}
-
+// --- Reset ---
 const resetTool = document.getElementById("resetTool");
-if (resetTool) {
-  resetTool.addEventListener("click", () => {
-    if (!confirm("Are you sure you want to reset the template to default? This will clear undo history.")) return;
-    try { deactivateAllTools(); } catch (err) {}
-    historyStack = [];
-    historyIndex = -1;
-    localStorage.removeItem("userTemplate");
-    const orig = previewFrame.dataset.originalSrc;
-    try {
-      if (previewFrame.src === orig) {
-        if (previewFrame.contentWindow && previewFrame.contentWindow.location) {
-          previewFrame.contentWindow.location.reload();
-        } else {
-          previewFrame.src = orig + "?_reset=" + Date.now();
-        }
-      } else {
-        previewFrame.src = orig;
-      }
-    } catch (err) {
-      previewFrame.src = orig + "?_reset=" + Date.now();
-    }
-  });
-}
+if (previewFrame && !previewFrame.dataset.originalSrc) previewFrame.dataset.originalSrc = previewFrame.src || "templates/index.html";
+if (resetTool) resetTool.addEventListener("click", () => {
+  if (!confirm("Reset template?")) return;
+  deactivateAllTools();
+  historyStack=[]; historyIndex=-1; localStorage.removeItem("userTemplate");
+  const orig = previewFrame.dataset.originalSrc;
+  previewFrame.src = orig + "?_reset=" + Date.now();
+});
 
 // --- Load saved template ---
 window.addEventListener("DOMContentLoaded", () => {
-  localStorage.removeItem("userTemplate");
   const savedHTML = localStorage.getItem("userTemplate");
   if (savedHTML) {
     const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
-    iframeDoc.open();
-    iframeDoc.write(savedHTML);
-    iframeDoc.close();
-    saveHistory();
+    iframeDoc.open(); iframeDoc.write(savedHTML); iframeDoc.close(); saveHistory();
   }
 });
+
+// --- Save page to DB ---
+async function savePage(filename, content) {
+  try {
+    let res = await fetch("https://onkaan-2.onrender.com/update", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({ filename, content })
+    });
+    let data = await res.json();
+    alert(data.success ? "✅ Page saved!" : "❌ Save failed: "+data.error);
+  } catch(err){ console.error(err); alert("Error saving page"); }
+}
+
+// --- Fetch for Google Sheets ---
+async function saveToGoogleSheet(sheetURL, rowData) {
+  try {
+    await fetch(sheetURL, {
+      method:"POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify(rowData)
+    });
+  } catch(err){ console.error("Google Sheet save failed", err); }
+}
+
+// --- Publish site ---
+async function publishSite() {
+  try {
+    let res = await fetch("https://onkaan-2.onrender.com/publish");
+    let text = await res.text();
+    alert(text);
+  } catch(err){ console.error(err); alert("Error publishing site"); }
+}
