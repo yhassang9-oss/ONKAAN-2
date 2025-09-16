@@ -278,6 +278,25 @@ window.addEventListener("DOMContentLoaded", () => {
   const savedHTML = localStorage.getItem("userTemplate");
   if (savedHTML) {
     const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
+    // --- Publish button (download HTML locally) ---
+const publishBtn = document.getElementById("publish");
+
+publishBtn.addEventListener("click", () => {
+  const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
+  const htmlContent = "<!DOCTYPE html>\n" + iframeDoc.documentElement.outerHTML;
+
+  const blob = new Blob([htmlContent], { type: "text/html" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "index.html"; // file name for download
+  a.click();
+  URL.revokeObjectURL(url);
+
+  alert("✅ Published! HTML downloaded locally.");
+});
+
     iframeDoc.open(); iframeDoc.write(savedHTML); iframeDoc.close(); saveHistory();
   }
 });
+
