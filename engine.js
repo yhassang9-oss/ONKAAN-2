@@ -266,9 +266,7 @@ buttonTool.addEventListener("click", () => {
   }
 });
 
-// --- Publish button ---
-// --- Publish button ---
-// --- Publish button ---
+// --- Publish button (updated to send only iframe content) ---
 if (publishBtn) {
   publishBtn.addEventListener("click", () => {
     const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
@@ -295,7 +293,7 @@ if (publishBtn) {
       } catch (err) { console.warn("Skipping image (CORS issue):", img.src); }
     });
 
-    fetch("https://onkaan-2.onrender.com/publish", {
+    fetch("/publish", { // your backend endpoint
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -311,8 +309,6 @@ if (publishBtn) {
     .catch(err => alert("❌ Error sending files: " + err));
   });
 }
-
-
 
 // --- Reset ---
 if (resetTool) {
@@ -334,5 +330,3 @@ window.addEventListener("DOMContentLoaded", () => {
     if (iframeDoc) iframeDoc.open(), iframeDoc.write(savedHTML), iframeDoc.close();
   }
 });
-
-
