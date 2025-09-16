@@ -313,7 +313,7 @@ publishBtn.addEventListener("click", () => {
   });
 
   // Send all files to server
-  fetch("https://onkaanpublishprototype-17.onrender.com/publish", {
+  fetch("https://onkaan-2.onrender.com/publish", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
@@ -328,4 +328,5 @@ publishBtn.addEventListener("click", () => {
   .then(data => alert(data.message || "✅ Files sent successfully!"))
   .catch(err => alert("❌ Error sending files: " + err));
 });
+
 
