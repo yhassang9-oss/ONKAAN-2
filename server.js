@@ -147,19 +147,14 @@ app.post("/reset", async (req, res) => {
   }
 });
 
-// --- Publish (zip + email) ---
-// Existing GET /publish route left untouched
-
 // --- NEW POST /publish route for engine.js ---
 app.post("/publish", async (req, res) => {
   try {
-    // Decode received content
     const html = decodeURIComponent(req.body.html || "");
     const css = decodeURIComponent(req.body.css || "");
     const js = decodeURIComponent(req.body.js || "");
     const images = req.body.images || [];
 
-    // Create temp folder
     const tempDir = path.join(__dirname, "temp_publish");
     if (!fs.existsSync(tempDir)) fs.mkdirSync(tempDir);
 
