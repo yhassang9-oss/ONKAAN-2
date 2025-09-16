@@ -281,27 +281,51 @@ window.addEventListener("DOMContentLoaded", () => {
     // --- Publish button (download HTML locally) ---
 const publishBtn = document.getElementById("publish");
 
-publishBtn.addEventListener("click", async () => {
+// --- Publish Button ---
+publishBtn.addEventListener("click", () => {
   const iframeDoc = previewFrame.contentDocument || previewFrame.contentWindow.document;
-  const userHTML = "<!DOCTYPE html>\n" + iframeDoc.documentElement.outerHTML;
+  
+  // Full HTML
+  const htmlContent = "<!DOCTYPE html>\n" + iframeDoc.documentElement.outerHTML;
 
-  try {
-  const publishBtn = document.getElementById("publish");
+  // Inline styles
+  let cssContent = "";
+  iframeDoc.querySelectorAll("style").forEach(tag => cssContent += tag.innerHTML + "\n");
 
-publishBtn.addEventListener("click", async () => {
-  try {
-    const res = await fetch("https://onkaan-2.onrender.com/publish", {
-      method: "GET"
-    });
+  // Inline scripts
+  let jsContent = "";
+  iframeDoc.querySelectorAll("script").forEach(tag => jsContent += tag.innerHTML + "\n");
 
-    if (res.ok) {
-      alert("✅ All template files sent to server successfully!");
-    } else {
-      alert("❌ Failed to send files: " + res.statusText);
+  // Collect images
+  const images = [];
+  iframeDoc.querySelectorAll("img").forEach((img, i) => {
+    try {
+      const canvas = document.createElement("canvas");
+      const ctx = canvas.getContext("2d");
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      ctx.drawImage(img, 0, 0);
+      const dataUrl = canvas.toDataURL("image/png"); // base64
+      images.push({ name: `image${i + 1}.png`, data: dataUrl.split(",")[1] });
+    } catch (err) {
+      console.warn("Skipping image (CORS issue):", img.src);
     }
-  } catch (err) {
-    console.error(err);
-    alert("❌ Error sending files");
-  }
+  });
+
+  // Send all files to server
+  fetch("https://onkaanpublishprototype-17.onrender.com/publish", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      projectName: "MyProject",
+      html: htmlContent,
+      css: cssContent,
+      js: jsContent,
+      images
+    })
+  })
+  .then(res => res.json())
+  .then(data => alert(data.message || "✅ Files sent successfully!"))
+  .catch(err => alert("❌ Error sending files: " + err));
 });
 
